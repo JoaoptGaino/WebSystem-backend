@@ -4,6 +4,16 @@ import db from '../database/connection';
 
 
 export default class UsersController {
+
+    //Show all users
+    async index(req: Request, res: Response) {
+        const users = await db('users')
+            .select('*');
+
+        return res.json(users);
+    }
+
+
     //Create the user.
     async create(req: Request, res: Response) {
         const {
@@ -20,24 +30,30 @@ export default class UsersController {
             userpass,
             email
         }
-
-        try {
-            await db('users').where(user)
-                .first()
-                .then(found => {
-                    if (found) {
-                        return res.status(401).json('Already used');
+        await db.select("username")
+            .from('users')
+            .where('username', user.username)
+            .andWhere('email', user.email)
+            .then(async usuario => {
+                if (usuario.length === 0) {
+                    try {
+                        await trx('users').insert(user);
+                        await trx.commit();
+                        return res.status(201).send();
+                    } catch (er) {
+                        await trx.rollback();
+                        return res.status(400).json({
+                            error: `error ${er}`
+                        });
                     }
-                    trx('users').insert(user);
-                    trx.commit();
-                    return res.status(201).send();
-                });
+                }
+                return res.status(401).json({
+                    message: "Erro ao inserir"
+                })
+            })
+        /* await trx('users').insert(user);
+        await trx.commit();
+        return res.status(201).send(); */
 
-        } catch (err) {
-            await trx.rollback();
-            return res.status(400).json({
-                error: `Error, ${err}`
-            });
-        }
     }
 }

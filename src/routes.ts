@@ -13,6 +13,7 @@ routes.get('/',(req,res)=>{
 
 //Creates new user
 routes.post('/users',userController.create);
+routes.get('/users',userController.index);
 
 
 

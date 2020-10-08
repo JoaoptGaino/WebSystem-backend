@@ -8,9 +8,9 @@ const db=knex({
     connection:{
         host:'127.0.0.1',
         user:'root',
-        password:'123456',
+        password:'mgtrda',
         database:'websystem',
-        port:3308,
+        port:3306,
     },
     useNullAsDefault:true,
 });
