@@ -1,9 +1,28 @@
 import { Request, Response } from 'express';
+import { cnpj as c} from 'cpf-cnpj-validator';
 import db from '../database/connection';
 
 
 
 export default class UsersController {
+
+    //Delete user
+    async delete(req: Request, res: Response) {
+        const { id } = req.params;
+
+        const removeUser = await db('users')
+            .where('id', id)
+            .delete();
+        if (!removeUser) {
+            return res.status(400).json({
+                message: "Error finding user",
+            });
+        }
+        return res.json({
+            "Message": 'Deleted',
+            removeUser
+        })
+    }
 
     //Show all users
     async index(req: Request, res: Response) {
@@ -12,16 +31,17 @@ export default class UsersController {
 
         return res.json(users);
     }
-
-
     //Create the user.
     async create(req: Request, res: Response) {
+        //const num = '12252926000153';
+        
         const {
             cnpj,
             username,
             userpass,
             email
         } = req.body;
+        const validCNPJ = c.isValid(cnpj);
         const trx = await db.transaction();
 
         const user = {
@@ -35,7 +55,7 @@ export default class UsersController {
             .where('username', user.username)
             .andWhere('email', user.email)
             .then(async usuario => {
-                if (usuario.length === 0) {
+                if (usuario.length === 0 && validCNPJ===true) {
                     try {
                         await trx('users').insert(user);
                         await trx.commit();
@@ -51,9 +71,5 @@ export default class UsersController {
                     message: "Erro ao inserir"
                 })
             })
-        /* await trx('users').insert(user);
-        await trx.commit();
-        return res.status(201).send(); */
-
     }
 }
