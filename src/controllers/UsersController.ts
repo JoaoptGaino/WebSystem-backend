@@ -4,6 +4,7 @@ import db from '../database/connection';
 
 
 export default class UsersController {
+    //Create the user.
     async create(req: Request, res: Response) {
         const {
             cnpj,
