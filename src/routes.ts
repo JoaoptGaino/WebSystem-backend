@@ -1,7 +1,8 @@
 import express from 'express';
+import UsersController from './controllers/UsersController';
 
 const routes = express.Router();
-
+const userController = new UsersController();
 
 //Main route
 routes.get('/',(req,res)=>{
@@ -9,11 +10,9 @@ routes.get('/',(req,res)=>{
 });
 
 
-routes.get('/products',(req,res)=>{
-    res.json({
-        message:"Olá"
-    })
-});
+
+//Creates new user
+routes.post('/users',userController.create);
 
 
 

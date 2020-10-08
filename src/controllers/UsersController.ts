@@ -21,13 +21,21 @@ export default class UsersController {
         }
 
         try {
-            await trx('users').insert(user);
-            await trx.commit();
-            return res.status(201).send();
-        }catch(err){
+            await db('users').where(user)
+                .first()
+                .then(found => {
+                    if (found) {
+                        return res.status(401).json('Already used');
+                    }
+                    trx('users').insert(user);
+                    trx.commit();
+                    return res.status(201).send();
+                });
+
+        } catch (err) {
             await trx.rollback();
             return res.status(400).json({
-                error:`Error, ${err}`
+                error: `Error, ${err}`
             });
         }
     }
