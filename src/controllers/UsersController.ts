@@ -1,11 +1,27 @@
 import { Request, Response } from 'express';
-import { cnpj as c} from 'cpf-cnpj-validator';
+import { cnpj as c } from 'cpf-cnpj-validator';
 import db from '../database/connection';
 
 
 
 export default class UsersController {
-
+    //Update user
+    async update(req: Request, res: Response) {
+        const { id } = req.params;
+        const {
+            username,
+            cnpj,
+            email
+        } = req.body;
+        //const validCNPJ = c.isValid(cnpj);
+        const updateUser = await db('users')
+        .where('id',id)
+        .update({username,cnpj,email});
+        return res.json({
+            message:"Updated",
+            updateUser
+        });
+    }
     //Delete user
     async delete(req: Request, res: Response) {
         const { id } = req.params;
@@ -34,7 +50,7 @@ export default class UsersController {
     //Create the user.
     async create(req: Request, res: Response) {
         //const num = '12252926000153';
-        
+
         const {
             cnpj,
             username,
@@ -55,7 +71,7 @@ export default class UsersController {
             .where('username', user.username)
             .andWhere('email', user.email)
             .then(async usuario => {
-                if (usuario.length === 0 && validCNPJ===true) {
+                if (usuario.length === 0 && validCNPJ === true) {
                     try {
                         await trx('users').insert(user);
                         await trx.commit();
