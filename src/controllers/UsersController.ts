@@ -5,6 +5,12 @@ import db from '../database/connection';
 
 
 export default class UsersController {
+    async howMany(req:Request,res:Response){
+        const users = await db('users').count('* as total');
+        return res.json(users);
+    }
+
+
     //Update user
     async update(req: Request, res: Response) {
         const { id } = req.params;

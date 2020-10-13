@@ -14,6 +14,7 @@ routes.get('/', (req, res) => {
 routes.get('/products',productsController.index);
 routes.get('/products/:id',productsController.unique);
 routes.post('/products',productsController.create);
+routes.delete('/products/:id',productsController.delete);
 
 
 
@@ -23,6 +24,7 @@ routes.get('/users', userController.index);//Show all users
 routes.post('/users/auth', userController.login);//Login
 routes.delete('/users/:id', userController.delete);//Deletes a user
 routes.put('/users/:id', userController.update);//Update user
+routes.get('/howmany',userController.howMany);
 
 
 

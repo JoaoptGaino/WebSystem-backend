@@ -3,8 +3,25 @@ import db from '../database/connection';
 
 export default class ProductsController {
 
+    //Delete product
+    async delete(req:Request,res:Response){
+        const {id} = req.params;
+
+        const removeProduct = await db('products').where('id',id).delete();
+        if(!removeProduct){
+            return res.status(401).json({
+                message:`Couldn't delete product ${id}`
+            });
+        }
+        return res.status(201).json({
+            message:`Deleted product ${id}`
+        });
+    }
+
+
+    //Returns a unique product by id
     async unique(req: Request, res: Response) {
-        const id = req.params;
+        const {id} = req.params;
         try {
             const product = await db('products')
                 .select('*')

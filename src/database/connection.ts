@@ -6,7 +6,7 @@ import path from 'path';
 const db=knex({
     client:'mysql',
     connection:{
-        host:'127.0.0.1',
+        host:'cloud.smartinova.com.br',
         user:'root',
         password:'mgtrda',
         database:'websystem',
