@@ -15,10 +15,10 @@ export default class UsersController {
         } = req.body;
         //const validCNPJ = c.isValid(cnpj);
         const updateUser = await db('users')
-        .where('id',id)
-        .update({username,cnpj,email});
+            .where('id', id)
+            .update({ username, cnpj, email });
         return res.json({
-            message:"Updated",
+            message: "Updated",
             updateUser
         });
     }
@@ -38,6 +38,26 @@ export default class UsersController {
             "Message": 'Deleted',
             removeUser
         })
+    }
+    //Login
+    async login(req: Request, res: Response) {
+        const {
+            username,
+            userpass
+        } = req.body;
+
+        const logou = await db('users')
+            .select('*')
+            .where('username', username)
+            .andWhere('userpass', userpass)
+
+        if (logou.length > 0) {
+            return res.status(201).json({ message: `Seja bem vindo, ${username}` });
+        }
+        else {
+            return res.status(401).json({ message: `Usuario errado` });
+        }
+
     }
 
     //Show all users
